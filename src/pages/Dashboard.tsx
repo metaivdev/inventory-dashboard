@@ -390,8 +390,8 @@ export function Dashboard() {
                       borderRadius: "8px",
                     }}
                     labelStyle={{ color: "#f1f5f9" }}
-                    formatter={(value: number, name: string) => [
-                      `${value.toLocaleString()} units`,
+                    formatter={(value) => [
+                      `${(value as number).toLocaleString()} units`,
                       "Stock",
                     ]}
                     labelFormatter={(label, payload) =>

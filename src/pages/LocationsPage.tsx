@@ -6,7 +6,6 @@ import {
   Package,
   ArrowLeft,
   Search,
-  Warehouse,
   Store,
   Wrench,
   Info,
