@@ -4,7 +4,6 @@ import {
   Package,
   Boxes,
   AlertTriangle,
-  DollarSign,
   TrendingUp,
   MapPin,
   Wrench,
@@ -22,11 +21,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import {
-  fetchItems,
-  fetchCompositeItems,
-  fetchItemsWithStock,
-} from "../api/inventory";
+import { fetchItemsWithStock } from "../api/inventory";
 import { StatsCard } from "../components/StatsCard";
 
 // Helper to determine location type
@@ -54,40 +49,31 @@ const COLORS = {
 };
 
 export function Dashboard() {
-  const { data: itemsData, isLoading: itemsLoading } = useQuery({
-    queryKey: ["items"],
-    queryFn: fetchItems,
-  });
-
-  const { data: compositeData, isLoading: compositeLoading } = useQuery({
-    queryKey: ["compositeItems"],
-    queryFn: fetchCompositeItems,
-  });
-
   const { data: stockData, isLoading: stockLoading } = useQuery({
     queryKey: ["itemsWithStock"],
     queryFn: fetchItemsWithStock,
   });
 
-  const items = itemsData?.items || [];
-  const compositeItems = compositeData?.compositeItems || [];
   const stockItems = stockData?.items || [];
-  const allItems = [...items, ...compositeItems];
-
-  // Calculate basic stats
-  const totalItems = items.length;
-  const totalComposite = compositeItems.length;
-  const lowStockItems = allItems.filter(
+  
+  // Use items-with-stock count (from MongoDB) for accurate totals
+  const itemsInStock = stockData?.count || 0;
+  
+  // Calculate stock stats from the complete stockItems data
+  const lowStockItems = stockItems.filter(
     (item) => item.stock_on_hand > 0 && item.stock_on_hand <= 10
   ).length;
-  const outOfStockItems = allItems.filter(
-    (item) => item.stock_on_hand <= 0
+  
+  // Items with 0 stock but exist in locations (edge case)
+  const criticalItems = stockItems.filter(
+    (item) => item.stock_on_hand <= 5 && item.stock_on_hand > 0
   ).length;
-  const totalStockValue = items.reduce((acc, item) => {
-    const stock = item.stock_on_hand || 0;
-    const rate = item.rate || 0;
-    return acc + (stock > 0 ? stock * rate : 0);
-  }, 0);
+  
+  // Calculate total stock units
+  const totalStockUnits = stockItems.reduce(
+    (acc, item) => acc + (item.stock_on_hand || 0),
+    0
+  );
 
   // Aggregate location data
   const locationStats = useMemo(() => {
@@ -181,7 +167,7 @@ export function Dashboard() {
     ];
   }, [locationStats]);
 
-  const isLoading = itemsLoading || compositeLoading || stockLoading;
+  const isLoading = stockLoading;
 
   return (
     <div className="space-y-8">
@@ -198,26 +184,26 @@ export function Dashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
-          title="Total Items"
-          value={totalItems}
+          title="Items In Stock"
+          value={itemsInStock}
           icon={<Package className="w-6 h-6 text-white" />}
           color="emerald"
         />
         <StatsCard
-          title="Composite Products"
-          value={totalComposite}
+          title="Total Stock Units"
+          value={totalStockUnits.toLocaleString()}
           icon={<Boxes className="w-6 h-6 text-white" />}
           color="cyan"
         />
         <StatsCard
-          title="Low Stock Items"
+          title="Low Stock (≤10)"
           value={lowStockItems}
           icon={<AlertTriangle className="w-6 h-6 text-white" />}
           color="amber"
         />
         <StatsCard
-          title="Out of Stock"
-          value={outOfStockItems}
+          title="Critical (≤5)"
+          value={criticalItems}
           icon={<AlertTriangle className="w-6 h-6 text-white" />}
           color="rose"
         />
@@ -225,22 +211,22 @@ export function Dashboard() {
 
       {/* Stock Value + Distribution Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Stock Value Card */}
+        {/* Stock Summary Card */}
         <div className="lg:col-span-2 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-violet-500/10 border border-slate-700 rounded-xl p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-slate-400 text-sm font-medium mb-1">
-                Estimated Stock Value
+                Total Inventory
               </p>
               <p className="text-4xl font-bold text-white">
-                ₦{totalStockValue.toLocaleString()}
+                {totalStockUnits.toLocaleString()} units
               </p>
               <p className="text-sm text-slate-400 mt-2">
-                Based on {totalItems} items with rates
+                Across {itemsInStock} different products in {locationStats.totalLocations} locations
               </p>
             </div>
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
-              <DollarSign className="w-8 h-8 text-white" />
+              <Package className="w-8 h-8 text-white" />
             </div>
           </div>
         </div>
@@ -489,12 +475,18 @@ export function Dashboard() {
           <TrendingUp className="w-5 h-5 text-violet-400" />
           <h3 className="text-lg font-semibold text-white">Quick Insights</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="text-center">
             <p className="text-3xl font-bold text-emerald-400">
-              {stockData?.count || 0}
+              {itemsInStock}
             </p>
-            <p className="text-sm text-slate-400 mt-1">Items In Stock</p>
+            <p className="text-sm text-slate-400 mt-1">Products In Stock</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold text-cyan-400">
+              {totalStockUnits.toLocaleString()}
+            </p>
+            <p className="text-sm text-slate-400 mt-1">Total Units</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-amber-400">
@@ -511,7 +503,7 @@ export function Dashboard() {
             <p className="text-sm text-slate-400 mt-1">In Production</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-cyan-400">
+            <p className="text-3xl font-bold text-violet-400">
               {locationStats.stores.length > 0
                 ? Math.round(
                     locationStats.storeUnits / locationStats.stores.length
