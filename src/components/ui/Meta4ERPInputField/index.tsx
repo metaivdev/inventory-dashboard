@@ -1,5 +1,6 @@
 import { Box, Input, Text, Image, InputGroup } from '@chakra-ui/react';
 import type { ChangeEvent } from 'react';
+import type { BoxProps } from '@chakra-ui/react';
 
 interface Meta4ERPInputFieldProps {
   label?: string;
@@ -9,6 +10,9 @@ interface Meta4ERPInputFieldProps {
   iconAlt?: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  width?: BoxProps['width'];
+  maxWidth?: BoxProps['maxWidth'];
+  minWidth?: BoxProps['minWidth'];
 }
 
 export const Meta4ERPInputField = ({
@@ -19,12 +23,15 @@ export const Meta4ERPInputField = ({
   iconAlt = 'input icon',
   value,
   onChange,
+  width,
+  maxWidth,
+  minWidth,
 }: Meta4ERPInputFieldProps) => {
   return (
-    <Box>
+    <Box width={width} maxWidth={maxWidth} minWidth={minWidth}>
       {label && <Text color="black">{label}</Text>}
       <InputGroup
-        flex="1"
+        flex={width ? 'none' : '1'}
         bg="#F8F8F8"
         mt={2}
         borderRadius="8px"

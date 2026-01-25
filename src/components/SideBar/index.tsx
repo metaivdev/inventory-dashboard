@@ -67,9 +67,15 @@ export const SideBar = () => {
               <Text>Create new</Text>
             </Flex>
 
-            <Flex gap={3} alignItems="center">
+            <Flex
+              gap={3}
+              alignItems="center"
+              cursor="pointer"
+              onClick={() => navigate('/workstations')}
+              _hover={{ opacity: 0.7 }}
+            >
               <Image src={workStationIcon} alt="Work Station Icon" />
-              <Text>Work Station</Text>
+              <Text>Workstations</Text>
             </Flex>
 
             <Box>

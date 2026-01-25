@@ -12,6 +12,8 @@ import { SuccessScreen } from './pages/SuccessScreen';
 
 // App Pages
 import { ProjectPage } from './pages/ProjectPage';
+import { WorkstationsPage } from './pages/WorkstationsPage';
+import { WorkstationPage } from './pages/WorkstationPage';
 
 // Layout
 import { Layout } from './components/Layout';
@@ -37,6 +39,8 @@ const appRoutes: RouteConfig[] = [
   { path: '/dashboard', element: <Projects /> },
   { path: '/projects', element: <Projects /> },
   { path: '/project/:projectId', element: <ProjectPage /> },
+  { path: '/workstations', element: <WorkstationsPage /> },
+  { path: '/workstation/:workstationId', element: <WorkstationPage /> },
 ];
 
 const queryClient = new QueryClient({
