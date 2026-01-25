@@ -55,17 +55,24 @@ export function StatsCard({ title, value, icon, trend, color }: StatsCardProps) 
           <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
           <p className="text-3xl font-bold text-white">{value.toLocaleString()}</p>
           {trend && (
-            <div className={`flex items-center gap-1 mt-2 text-sm ${trend.isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {trend.isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+            <div
+              className={`flex items-center gap-1 mt-2 text-sm ${trend.isPositive ? 'text-emerald-400' : 'text-rose-400'}`}
+            >
+              {trend.isPositive ? (
+                <TrendingUp className="w-4 h-4" />
+              ) : (
+                <TrendingDown className="w-4 h-4" />
+              )}
               <span>{Math.abs(trend.value)}%</span>
             </div>
           )}
         </div>
-        <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colors.gradient} flex items-center justify-center`}>
+        <div
+          className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colors.gradient} flex items-center justify-center`}
+        >
           {icon}
         </div>
       </div>
     </div>
   );
 }
-

@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { Truck, RefreshCw, MapPin, ArrowRightLeft } from "lucide-react";
-import { fetchTransferOrders } from "../api/inventory";
-import { TransferOrdersTable } from "../components/TransferOrdersTable";
-import { StatsCard } from "../components/StatsCard";
-import { useMemo } from "react";
+import { useQuery } from '@tanstack/react-query';
+import { Truck, RefreshCw, MapPin, ArrowRightLeft } from 'lucide-react';
+import { fetchTransferOrders } from '../api/inventory';
+import { TransferOrdersTable } from '../components/TransferOrdersTable';
+import { StatsCard } from '../components/StatsCard';
+import { useMemo } from 'react';
 
 export function TransferOrdersPage() {
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["transferOrders"],
+    queryKey: ['transferOrders'],
     queryFn: fetchTransferOrders,
   });
 
@@ -19,7 +19,7 @@ export function TransferOrdersPage() {
     const totalQuantity = orders.reduce((acc, o) => acc + o.quantity_transfer, 0);
     const uniqueFromLocations = new Set(orders.map((o) => o.from_location_name)).size;
     const uniqueToLocations = new Set(orders.map((o) => o.to_location_name)).size;
-    const transferredCount = orders.filter((o) => o.status === "transferred").length;
+    const transferredCount = orders.filter((o) => o.status === 'transferred').length;
 
     return {
       totalOrders,
@@ -50,7 +50,7 @@ export function TransferOrdersPage() {
           disabled={isFetching}
           className="flex items-center gap-2 px-4 py-2.5 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/30 transition-all disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 ${isFetching ? 'animate-spin' : ''}`} />
           Refresh
         </button>
       </div>
@@ -88,6 +88,3 @@ export function TransferOrdersPage() {
     </div>
   );
 }
-
-
-

@@ -1,4 +1,9 @@
-import type { ItemsResponse, CompositeItemsResponse, TransferOrdersResponse, ItemsWithStockResponse } from '../types/inventory';
+import type {
+  ItemsResponse,
+  CompositeItemsResponse,
+  TransferOrdersResponse,
+  ItemsWithStockResponse,
+} from '../types/inventory';
 
 const BASE_URL = 'https://campaigns.createyourmeta-iv.com/inventory/store-count';
 
