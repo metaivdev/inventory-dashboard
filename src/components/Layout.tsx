@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { SideBar } from './SideBar';
 import { Box, Flex } from '@chakra-ui/react';
 import { NewProjectPopup } from './NewProjectPopup';
+import { TransferOrderPopup } from './TransferOrderPopup';
 import { useProjectStore } from '../store';
 
 interface LayoutProps {
@@ -9,7 +10,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
-  const { isNewProjectOpen } = useProjectStore();
+  const { isNewProjectOpen, isTransferOrderOpen } = useProjectStore();
 
   return (
     <Flex minH="100vh" className="bg-slate-900">
@@ -21,8 +22,9 @@ export function Layout({ children }: LayoutProps) {
         <Box className="p-8">{children}</Box>
       </main>
 
-      {/* Global Popup */}
+      {/* Global Popups */}
       {isNewProjectOpen && <NewProjectPopup />}
+      {isTransferOrderOpen && <TransferOrderPopup />}
     </Flex>
   );
 }

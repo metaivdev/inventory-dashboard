@@ -23,11 +23,14 @@ export interface Project {
 interface ProjectStore {
   // State
   isNewProjectOpen: boolean;
+  isTransferOrderOpen: boolean;
   projects: Project[];
 
   // Actions
   openNewProject: () => void;
   closeNewProject: () => void;
+  openTransferOrder: () => void;
+  closeTransferOrder: () => void;
   getProjectById: (id: string) => Project | undefined;
 }
 
@@ -134,11 +137,14 @@ const initialProjects: Project[] = [
 export const useProjectStore = create<ProjectStore>((set, get) => ({
   // Initial state
   isNewProjectOpen: false,
+  isTransferOrderOpen: false,
   projects: initialProjects,
 
   // Actions
   openNewProject: () => set({ isNewProjectOpen: true }),
   closeNewProject: () => set({ isNewProjectOpen: false }),
+  openTransferOrder: () => set({ isTransferOrderOpen: true }),
+  closeTransferOrder: () => set({ isTransferOrderOpen: false }),
   getProjectById: (id: string) => {
     return get().projects.find((project) => project.id === id);
   },

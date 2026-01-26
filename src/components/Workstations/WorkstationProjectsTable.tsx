@@ -1,11 +1,35 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { Meta4ERPTable, type TableColumn } from '../ui/Meta4ERPTable';
+import {
+  Meta4ERPTable,
+  type TableColumn,
+  type TableAction,
+} from '../ui/Meta4ERPTable';
 import type { Project } from '../../store/projectStore';
+import { useProjectStore } from '../../store';
 
 interface WorkstationProjectsTableProps {
   data: Project[];
 }
+
+// 3-dots menu icon component
+const ThreeDotsIcon = () => (
+  <Box
+    as="svg"
+    width="20px"
+    height="20px"
+    fill="none"
+    cursor="pointer"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    _hover={{ opacity: 0.7 }}
+  >
+    <circle cx="12" cy="5" r="2" fill="#4A5565" />
+    <circle cx="12" cy="12" r="2" fill="#4A5565" />
+    <circle cx="12" cy="19" r="2" fill="#4A5565" />
+  </Box>
+);
 
 const getColumns = (
   navigate: (path: string) => void
@@ -58,13 +82,31 @@ export const WorkstationProjectsTable = ({
   data,
 }: WorkstationProjectsTableProps) => {
   const navigate = useNavigate();
+  const { openTransferOrder } = useProjectStore();
+
+  const handleSelectionChange = (selectedIds: string[]) => {
+    console.log('Selected project IDs:', selectedIds);
+  };
+
+  const actions: TableAction<Project>[] = [
+    {
+      icon: <ThreeDotsIcon />,
+      onClick: (item) => {
+        console.log('Action clicked for project:', item);
+        openTransferOrder();
+      },
+      tooltip: 'Transfer order',
+    },
+  ];
 
   return (
     <Box>
       <Meta4ERPTable
         data={data}
         columns={getColumns(navigate)}
-        showCheckboxes={false}
+        showCheckboxes={true}
+        onSelectionChange={handleSelectionChange}
+        actions={actions}
       />
     </Box>
   );
