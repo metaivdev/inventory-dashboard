@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
+import { Provider } from 'react-redux';
 import type { ReactNode } from 'react';
+import { store } from './store/store';
 
 // Auth Pages
 import { Login } from './pages/Login';
@@ -54,27 +56,29 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <ChakraProvider value={defaultSystem}>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <Routes>
-            {/* Auth routes - no layout/sidebar */}
-            {authRoutes.map(({ path, element }) => (
-              <Route key={path} path={path} element={element} />
-            ))}
+    <Provider store={store}>
+      <ChakraProvider value={defaultSystem}>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <Routes>
+              {/* Auth routes - no layout/sidebar */}
+              {authRoutes.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+              ))}
 
-            {/* App routes - with layout/sidebar */}
-            {appRoutes.map(({ path, element }) => (
-              <Route
-                key={path}
-                path={path}
-                element={<Layout>{element}</Layout>}
-              />
-            ))}
-          </Routes>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </ChakraProvider>
+              {/* App routes - with layout/sidebar */}
+              {appRoutes.map(({ path, element }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={<Layout>{element}</Layout>}
+                />
+              ))}
+            </Routes>
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ChakraProvider>
+    </Provider>
   );
 }
 
